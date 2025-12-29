@@ -1,0 +1,19 @@
+{
+  "name": "watch-changes",
+  "version": "1.0.0",
+  "description": "",
+  "main": "watch-changes.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/IvoRNF/watch-changes.git"
+  },
+  "author": "Ivo Ribeiro",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/IvoRNF/watch-changes/issues"
+  },
+  "homepage": "https://github.com/IvoRNF/watch-changes#readme"
+}
