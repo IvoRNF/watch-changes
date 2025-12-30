@@ -1,7 +1,7 @@
 {
   "name": "watch-changes",
-  "version": "1.0.0",
-  "description": "",
+  "version": "1.0.3",
+  "description": "this package listen for existence of file changes.signal on current directory, if exists execute build command passed as first arg and then execute start command passed as second arg",
   "main": "watch-changes.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -14,6 +14,9 @@
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/IvoRNF/watch-changes/issues"
+  },
+  "bin": {
+    "watch-changes": "./.bin/main.js"
   },
   "homepage": "https://github.com/IvoRNF/watch-changes#readme"
 }
