@@ -1,6 +1,6 @@
-const fs = require('fs');
-const { execSync, spawn } = require('child_process');
-const fname = './change.signal';
+const fs = require("fs");
+const { execSync, spawn } = require("child_process");
+const fname = "./change.signal";
 
 async function main() {
   const [buildCommand, startCommandText] = process.argv.slice(2);
@@ -9,7 +9,7 @@ async function main() {
   }
   while (true) {
     if (fs.existsSync(fname)) {
-      console.log('building.... ' + buildCommand);
+      console.log("building.... " + buildCommand);
       try {
         const output = execSyncCommand(buildCommand);
         if (output) {
@@ -17,9 +17,13 @@ async function main() {
           startCommand(startCommandText);
         }
       } catch (err) {
+        fs.writeFileSync("./errors", err.stdout);
+
         process.stdout.write(err.stdout);
       } finally {
-        fs.unlinkSync(fname);
+        if (fs.existsSync(fname)) {
+          fs.unlinkSync(fname);
+        }
       }
     }
 
@@ -30,16 +34,16 @@ async function main() {
 }
 
 function startCommand(startCommandText) {
-  const fnamePid = './pid';
+  const fnamePid = "./pid";
   if (fs.existsSync(fnamePid)) {
     const pid = Number(fs.readFileSync(fnamePid).toString());
     try {
       process.kill(-pid);
       child = null;
-      console.log('killed');
+      console.log("killed");
     } catch (err) {}
   }
-  const [command, ...otherArgs] = startCommandText.split(' ');
+  const [command, ...otherArgs] = startCommandText.split(" ");
   const child = spawnCommand(command, otherArgs);
   fs.writeFileSync(fnamePid, child.pid.toString());
   return child;
