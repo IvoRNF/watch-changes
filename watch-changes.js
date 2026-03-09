@@ -4,33 +4,33 @@ const fname = "./change.signal";
 
 async function main() {
   const [buildCommand, startCommandText] = process.argv.slice(2);
+  startCommand(startCommandText);
   if (!fs.existsSync(fname)) {
-    startCommand(startCommandText);
+    fs.writeFileSync(fname, Buffer.from(""));
   }
-  while (true) {
-    if (fs.existsSync(fname)) {
-      console.log("building.... " + buildCommand);
-      try {
-        const output = execSyncCommand(buildCommand);
-        if (output) {
-          console.log(output.toString());
-          startCommand(startCommandText);
-        }
-      } catch (err) {
-        fs.writeFileSync("./errors", err.stdout);
-
-        process.stdout.write(err.stdout);
-      } finally {
-        if (fs.existsSync(fname)) {
-          fs.unlinkSync(fname);
-        }
+  let timeOutHandle = null;
+  fs.watch(fname, (eventType, fileName) => {
+    if (fileName && eventType === "change") {
+      if (timeOutHandle) {
+        clearTimeout(timeOutHandle);
+        timeOutHandle = null;
       }
+      timeOutHandle = setTimeout(() => {
+        console.log("building application.... " + buildCommand);
+        timeOutHandle = null;
+        try {
+          const output = execSyncCommand(buildCommand);
+          if (output) {
+            console.log(output.toString());
+            startCommand(startCommandText);
+          }
+        } catch (err) {
+          fs.writeFileSync("./errors", err.stdout);
+          process.stdout.write(err.stdout);
+        }
+      }, 500);
     }
-
-    await new Promise((resolve, reject) => {
-      setTimeout(() => resolve(null), 2000);
-    });
-  }
+  });
 }
 
 function startCommand(startCommandText) {
